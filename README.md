@@ -25,3 +25,7 @@
 - [ ] EPM（还没有完全公开。来源：[Legal Judgment Prediction via Event Extraction with Constraints](https://aclanthology.org/2022.acl-long.48/)
 
 # 3. 实验结果
+
+其他信息：
+1. torch_ljp/dataset_utils/other_data文件夹内放的是一些比较小，而且不太好解释怎么制作的文件，所以直接跟着GitHub项目一起上传了。
+    1. cn_criminal_law.txt：中华人民共和国刑法。复制自[中华人民共和国刑法_审计署网站](https://www.audit.gov.cn/n7/n34/n58/c109675/content.html)。
