@@ -28,4 +28,4 @@
 
 其他信息：
 1. torch_ljp/dataset_utils/other_data文件夹内放的是一些比较小，而且不太好解释怎么制作的文件，所以直接跟着GitHub项目一起上传了。
-    1. cn_criminal_law.txt：2021版中华人民共和国刑法。复制自[中华人民共和国刑法（2022年最新版） - 中国刑事辩护网](http://www.chnlawyer.net/law/subs/xingfa.html)中下载的Word文件。
+    1. cn_criminal_law.txt：2021版中华人民共和国刑法。复制自[中华人民共和国刑法（2022年最新版） - 中国刑事辩护网](http://www.chnlawyer.net/law/subs/xingfa.html)中下载的Word文件，并删除了其中语涉“中国刑事辩护网提供……”的字样。
