@@ -2,12 +2,13 @@
 直接通过命令行即可调用torch_ljp/main.py文件，传入参数并得到对应的结果，需要预先在torch_ljp文件夹下创建config.py文件（由于真实文件涉及个人隐私，因此没有上传，但是我上传了一个fakeconfig.py文件，把里面需要填的参数填上就行）。  
 具体的使用命令可参考example.txt。  
 op_examples文件夹是输出示例，详细内容请参考具体文件。
+模型的预测指标及其计算方式详见metrics文件夹中的介绍。
 
 以下分别介绍本项目中已经可实现分析和处理的数据，模型，及二者相对应的任务中，我跑出来的实验结果和原论文或其他引用论文中跑出来的结果的对比（有海量没整好的内容，等我慢慢补吧）：
 （如果您希望我添加什么数据或模型，可以直接给我提issue！）
 # 1. 数据
 中文：
-- [x] CAIL（来源：[CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)，下载地址：<https://cail.oss-cn-qingdao.aliyuncs.com/CAIL2018_ALL_DATA.zip>）
+- [x] CAIL（又名CAIL2018数据集）（来源：[CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)，下载地址：<https://cail.oss-cn-qingdao.aliyuncs.com/CAIL2018_ALL_DATA.zip>）（在CAIL2018比赛中，原始任务是：以事实文本作为输入，以分类任务的范式，预测罪名（accusation）、法条（law）、刑期（imprisonment，单位为月，如被判为无期徒刑则是-1、死刑是-2）
 - [ ] LJP-E（还没有完全公开。来源：[Legal Judgment Prediction via Event Extraction with Constraints](https://aclanthology.org/2022.acl-long.48/)）
 
 英文（美国）：
@@ -20,13 +21,37 @@ op_examples文件夹是输出示例，详细内容请参考具体文件。
 - [ ] BSARD（来源：[A Statutory Article Retrieval Dataset in French](https://arxiv.org/abs/2108.11792)）
 
 # 2. 模型
-- [ ] LibSVM（来源：[CAIL2018/baseline at master · thunlp/CAIL2018](https://github.com/thunlp/CAIL2018/tree/master/baseline)）
+## 2.1 general-domain分类模型
+- [ ] TFIDF+SVM（又名LibSVM）：定类数据，多分类单标签范式。（[CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)使用的baseline。代码参考：[CAIL2018/baseline at master · thunlp/CAIL2018](https://github.com/thunlp/CAIL2018/tree/master/baseline)）
+- [ ] FastText（[CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)使用的baseline）
+- [ ] CNN（[CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)使用的baseline）
+## 2.2 domain-specific分类模型
 - [ ] LeSICiN（来源：[LeSICiN: A Heterogeneous Graph-Based Approach for Automatic Legal Statute Identification from Indian Legal Documents](https://arxiv.org/abs/2112.14731)）
 - [ ] ILLDM（只能用在特殊数据里，但是原始数据还没有公开。来源：[Interpretable Low-Resource Legal Decision Making](https://arxiv.org/abs/2201.01164)）
 - [ ] EPM（官方代码还没有完全公开，我发邮件问了作者他说他以后要全部公开的，所以我想等他们全部公开了再写。来源：[Legal Judgment Prediction via Event Extraction with Constraints](https://aclanthology.org/2022.acl-long.48/)
 
 # 3. 实验结果
+## 3.1 论文中原有的结果
+### 3.1.1 CAIL数据集
+#### [CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)
+使用CAIL2018原始任务范式。
 
-其他信息：
+删除多被告情况，仅保留单一被告的案例；删除了出现频数低于30的罪名和法条；删除了不与特定罪名相关的102个法条（没看懂这句话是啥意思）。训练集是first_stage/train.json，测试集是 first_stage/test.json + restData/rest_data.json。用THULAC分词，Adam优化器，学习率为0.001，dropout rate是0.5，batch size是128
+
+baseline：
+①TFIDF+SVM（SVM是线性核，特征维度是5000，用skip-gram训练200维词向量）
+②CNN（输入限长4096，filter widths是(2, 3, 4, 5)，filter size是64）
+③FastText
+
+指标：accuracy, macro-precision, macro-recall
+
+实验结果：
+![pic1](pics/cail2018result.png)
+## 3.2 我运行官方代码复现的结果
+仅复现原文中的实验配置。
+## 3.3 使用本项目代码复现的结果
+实验配置见example.txt中的命令行。
+
+其他注意事项：
 1. torch_ljp/dataset_utils/other_data文件夹内放的是一些比较小，而且不太好解释怎么制作的文件，所以直接跟着GitHub项目一起上传了。
     1. cn_criminal_law.txt：2021版中华人民共和国刑法。复制自[中华人民共和国刑法（2022年最新版） - 中国刑事辩护网](http://www.chnlawyer.net/law/subs/xingfa.html)中下载的Word文件，并删除了其中语涉“中国刑事辩护网提供……”的字样。

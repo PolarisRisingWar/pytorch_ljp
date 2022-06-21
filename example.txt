@@ -1,2 +1,2 @@
-数据分析：
-CAIL 命令行：python main.py -a
+打印数据分析内容：
+CAIL：python torch_ljp/main.py -a
