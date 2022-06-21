@@ -14,7 +14,7 @@ def cail_analyse(data_path:str,accu_path:str="",law_path:str=""):
     对CAIL数据集进行分析
     """
     #打印已知基本信息
-    print('CAIL数据集：中文刑事案件数据集，源自中国裁判文书网http://wenshu.court.gov.cn/\n虽然原文声称被告只有一个，但其实存在多被告场景')
+    print('CAIL数据集：中文刑事案件数据集，源自中国裁判文书网http://wenshu.court.gov.cn/ \n虽然原文声称被告只有一个，但其实存在多被告场景')
     print()
 
     train_small_path=os.path.join(data_path,'exercise_contest','data_train.json')
@@ -35,7 +35,7 @@ def cail_analyse(data_path:str,accu_path:str="",law_path:str=""):
     #事实描述文本和判决结果
     chosen_json=json.loads(random.choice(open(random.choice(subpaths)).readlines()))
     print('样本原文：'+str(chosen_json)+'\n')
-    print('样本内容解释：\n\n事实描述文本：'+chosen_json['fact']+'\n被告（数据均为单被告场景）：'+str(chosen_json['meta']['criminals']))
+    print('样本内容解释：\n\n事实描述文本：'+chosen_json['fact']+'\n被告：'+str(chosen_json['meta']['criminals']))
     print('罚款：'+str(chosen_json['meta']['punish_of_money'])+'\n罪名：'+str(chosen_json['meta']['accusation']))
     articles=chosen_json['meta']['relevant_articles']
     cn_crimnal_law=open(cn_crimnal_law_path).read()
@@ -70,18 +70,31 @@ def cail_analyse(data_path:str,accu_path:str="",law_path:str=""):
     print('不去重样本总数：'+str(duplicate_no))  #2916228
     print('去重样本总数：'+str(len(deduplicate)))  #2784403
 
+    #检查每种accusation/article对应的样本数，每个样本的平均被告数、article数、accusation数
+    #TODO: 根据这个列表来画个分布图
+    criminal_sum=0
+    article_sum=0
+    accusation_sum=0
     for factor in tqdm(deduplicate):
         article_list=eval(factor[factor.find('article:')+8:factor.find('accu:')])
-        print(article_list)
+        article_sum+=len(article_list)
         for a in article_list:
-            law_index=law.index(a)
+            law_index=law.index(str(a))  #这个我发现就有的是str，有的是int，比较的狗
             law_counts[law_index]+=1
-        accusation=factor[factor.find('accu:')+5:]
-        print(accusation)
+        accusation=eval(factor[factor.find('accu:')+5:factor.find('criminal:')])
+        accusation_sum+=len(accusation)
         for a in accusation:
-            accu_index=accu.index(accusation)
+            accu_index=accu.index(re.sub('[\[\]]','',a))  #边缘例子：'[生产、销售]伪劣产品'
             accu_counts[accu_index]+=1
-        break
+        criminals=eval(factor[factor.find('criminal:')+9:])
+        criminal_sum+=len(criminals)
+        
+    
+    print(law_counts)
+    print(accu_counts)
+    print(criminal_sum/len(deduplicate))
+    print(accusation_sum/len(deduplicate))
+    print(criminal_sum/len(deduplicate))  #这三个基本上都是1左右
 
 
 
@@ -95,5 +108,5 @@ def cail_mediate_func(d):
     if len(m['criminals'])>1:
         pass  #反正有
     
-    return(j['fact']+str(sorted(m['criminals']))+str(m['punish_of_money'])+str(ti['death_penalty'])+str(ti['life_imprisonment'])+\
-            str(ti['imprisonment'])+'article:'+str(sorted(m['relevant_articles']))+'accu:'+str(sorted(m['accusation'])))
+    return(j['fact']+str(m['punish_of_money'])+str(ti['death_penalty'])+str(ti['life_imprisonment'])+str(ti['imprisonment'])+\
+            'article:'+str(sorted(m['relevant_articles']))+'accu:'+str(sorted(m['accusation']))+'criminal:'+str(sorted(m['criminals'])))
