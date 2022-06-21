@@ -71,7 +71,7 @@ def cail_analyse(data_path:str,accu_path:str="",law_path:str=""):
     print('去重样本总数：'+str(len(deduplicate)))  #2784403
 
     #检查每种accusation/article对应的样本数，每个样本的平均被告数、article数、accusation数
-    #TODO: 根据这个列表来画个分布图
+    #TODO: 根据这个列表来画个分布图，以体现出数据集的分布不平衡这一特性来
     criminal_sum=0
     article_sum=0
     accusation_sum=0

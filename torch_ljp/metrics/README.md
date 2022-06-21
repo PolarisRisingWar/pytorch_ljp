@@ -16,4 +16,4 @@
 ![pic1](../../pics/cail2018imprisionmetric.png)
 
 代码实现参考：
-1. CAIL2018相关：[CAIL2018/judger.py at master · thunlp/CAIL2018](https://github.com/thunlp/CAIL2018/blob/master/judger/judger.py)
+1. CAIL2018相关：[CAIL2018/judger.py at master · thunlp/CAIL2018](https://github.com/thunlp/CAIL2018/blob/master/judger/judger.py)，论文[Overview of CAIL2018: Legal Judgment Prediction Competition](https://arxiv.org/abs/1810.05851)

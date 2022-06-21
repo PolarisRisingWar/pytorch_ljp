@@ -3,6 +3,7 @@
 具体的使用命令可参考example.txt。  
 op_examples文件夹是输出示例，详细内容请参考具体文件。
 模型的预测指标及其计算方式详见metrics文件夹中的介绍。
+我所使用的系统环境中的重要版本见enviroment_v.txt所示。
 
 以下分别介绍本项目中已经可实现分析和处理的数据，模型，及二者相对应的任务中，我跑出来的实验结果和原论文或其他引用论文中跑出来的结果的对比（有海量没整好的内容，等我慢慢补吧）：
 （如果您希望我添加什么数据或模型，可以直接给我提issue！）
@@ -22,13 +23,20 @@ op_examples文件夹是输出示例，详细内容请参考具体文件。
 
 # 2. 模型
 ## 2.1 general-domain分类模型
-- [ ] TFIDF+SVM（又名LibSVM）：定类数据，多分类单标签范式。（[CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)使用的baseline。代码参考：[CAIL2018/baseline at master · thunlp/CAIL2018](https://github.com/thunlp/CAIL2018/tree/master/baseline)）
+- [ ] TFIDF+SVM（又名LibSVM）：定类数据，多分类单标签范式。（TFIDF来自[Term-weighting approaches in automatic text retrieval](https://www.scinapse.io/papers/1978394996)，SVM来自[Least Squares Support Vector Machine Classifiers](https://lirias.kuleuven.be/retrieve/88556)。[CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)使用的baseline。代码参考：[CAIL2018/baseline at master · thunlp/CAIL2018](https://github.com/thunlp/CAIL2018/tree/master/baseline)）
 - [ ] FastText（[CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)使用的baseline）
-- [ ] CNN（[CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)使用的baseline）
+- [ ] TextCNN（又名CNN）（来源：[Convolutional neural networks for sentence classification](https://arxiv.org/abs/1408.5882)，[CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)使用的baseline）
+- [ ] LSTM（来源：[Long short-term memory](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.676.4320&rep=rep1&type=pdf)）
+- [ ] GRU（来源：[Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation](https://arxiv.org/abs/1406.1078))
+- [ ] HAN（来源：[Hierarchical Attention Networks for Document Classification](https://aclanthology.org/N16-1174/)）
+- [ ] RCNN（来源：[Recurrent Convolutional Neural Networks for Text Classification](https://www.aaai.org/ocs/index.php/AAAI/AAAI15/paper/download/9745/9552)）
+- [ ] DPCNN（来源：[Deep Pyramid Convolutional Neural Networks for Text Categorization](https://aclanthology.org/P17-1052/)）
 ## 2.2 domain-specific分类模型
 - [ ] LeSICiN（来源：[LeSICiN: A Heterogeneous Graph-Based Approach for Automatic Legal Statute Identification from Indian Legal Documents](https://arxiv.org/abs/2112.14731)）
 - [ ] ILLDM（只能用在特殊数据里，但是原始数据还没有公开。来源：[Interpretable Low-Resource Legal Decision Making](https://arxiv.org/abs/2201.01164)）
 - [ ] EPM（官方代码还没有完全公开，我发邮件问了作者他说他以后要全部公开的，所以我想等他们全部公开了再写。来源：[Legal Judgment Prediction via Event Extraction with Constraints](https://aclanthology.org/2022.acl-long.48/)
+## 2.3 general-domain回归模型
+- [ ] 线性回归
 
 # 3. 实验结果
 ## 3.1 论文中原有的结果
@@ -40,7 +48,7 @@ op_examples文件夹是输出示例，详细内容请参考具体文件。
 
 baseline：
 ①TFIDF+SVM（SVM是线性核，特征维度是5000，用skip-gram训练200维词向量）
-②CNN（输入限长4096，filter widths是(2, 3, 4, 5)，filter size是64）
+②TextCNN（输入限长4096，filter widths是(2, 3, 4, 5)，filter size是64）
 ③FastText
 
 指标：accuracy, macro-precision, macro-recall
