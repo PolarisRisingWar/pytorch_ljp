@@ -8,7 +8,9 @@ parser.add_argument("-up","--use_preprocessed",action='store_true')  #是否使�
 
 parser.add_argument("-a","--analyse",action="store_true")  #是否打印对数据集的分析内容
 
-parser.add_argument('-ws','-word_segmentation',default='jieba',nargs='+')  #分词工具，第一个入参是工具名称，后面的入参是其他参数
+parser.add_argument('-ws','-word_segmentation',default='NLTK',nargs='+')  #分词工具，第一个入参是工具名称，后面的入参是其他参数
+#英文：NLTK
+#中文：jieba
 
 parser.add_argument("-dp","--do_preprocess",default=None,choices=[None,'use_preprocessed','default'])  #对数据进行预处理工作
 #可选方法：负采样，过采样

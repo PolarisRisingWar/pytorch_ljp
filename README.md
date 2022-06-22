@@ -10,16 +10,24 @@ op_examples文件夹是输出示例，详细内容请参考具体文件。
 # 1. 数据
 中文：
 - [x] CAIL（又名CAIL2018数据集）（来源：[CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)，下载地址：<https://cail.oss-cn-qingdao.aliyuncs.com/CAIL2018_ALL_DATA.zip>）（在CAIL2018比赛中，原始任务是：以事实文本作为输入，以分类任务的范式，预测罪名（accusation）、法条（law）、刑期（imprisonment，单位为月，如被判为无期徒刑则是-1、死刑是-2）
-- [ ] LJP-E（还没有完全公开。来源：[Legal Judgment Prediction via Event Extraction with Constraints](https://aclanthology.org/2022.acl-long.48/)）
+- [ ] CAIL2021（来源：[Equality before the law: Legal judgment consistency analysis for fairness](https://arxiv.org/abs/2103.13868)，改自CAIL数据集。包含在FairLex中）
+- [ ] LJP-E（还没有完全公开，我发邮件问过一作，他说会全部公开的。来源：[Legal Judgment Prediction via Event Extraction with Constraints](https://aclanthology.org/2022.acl-long.48/)）
 
 英文（美国）：
-- [ ] ILLDM（作者在论文里说要公开的，但是至今没有公开。来源：[Interpretable Low-Resource Legal Decision Making](https://arxiv.org/abs/2201.01164)）
+- [ ] ILLDM（作者在论文里说要公开的，但是GitHub项目里还没有放出来。来源：[Interpretable Low-Resource Legal Decision Making](https://arxiv.org/abs/2201.01164)）
+
+英文（欧洲）：
+- [ ] ECHR（来源：[Neural Legal Judgment Prediction in English](https://arxiv.org/abs/1906.02059)，下载地址：<https://archive.org/download/ECHR-ACL2019/ECHR_Dataset.zip>。包含在LexGLUE中）
+- [ ] ECtHR（来源：[Paragraph-level Rationale Extraction through Regularization: A case study on European Court of Human Rights Cases](https://aclanthology.org/2021.naacl-main.22/)，下载地址：[ecthr_cases · Datasets at Hugging Face](https://huggingface.co/datasets/ecthr_cases)。使用时同时需引用[Neural Legal Judgment Prediction in English](https://arxiv.org/abs/1906.02059)。包含在FairLex、LexGLUE中）
 
 英文（印度）：
 - [ ] ILSI（来源：[LeSICiN: A Heterogeneous Graph-Based Approach for Automatic Legal Statute Identification from Indian Legal Documents](https://arxiv.org/abs/2112.14731)，下载地址：[Dataset and additional files/softwares required for the paper "LeSICiN: A Heterogeneous Graph-based Approach for Automatic Legal Statute Identification from Indian Legal Documents" | Zenodo](https://zenodo.org/record/6053791#.YrAtHnZByUl)（除best_model.pt和ils2v.bin外都是数据相关的文件）
 
 法语（比利时）：
-- [ ] BSARD（来源：[A Statutory Article Retrieval Dataset in French](https://arxiv.org/abs/2108.11792)）
+- [ ] BSARD（来源：[A Statutory Article Retrieval Dataset in French](https://arxiv.org/abs/2108.11792)，下载地址：<https://raw.githubusercontent.com/maastrichtlawtech/bsard/master/data/bsard_v1.zip>）
+
+多语言：
+- [ ] Swiss-Judgment-Predict dataset（瑞士，德语、法语、意大利语，来源：[Swiss-Judgment-Prediction: A Multilingual Legal Judgment Prediction Benchmark](https://arxiv.org/abs/2110.00806)，下载地址1 [SwissJudgmentPrediction | Zenodo](https://zenodo.org/record/5529712#.YrKCJXZByUk)，下载地址2 [swiss_judgment_prediction · Datasets at Hugging Face](https://huggingface.co/datasets/swiss_judgment_prediction)。包含在FairLex中）
 
 # 2. 模型
 ## 2.1 general-domain分类模型
@@ -32,11 +40,19 @@ op_examples文件夹是输出示例，详细内容请参考具体文件。
 - [ ] RCNN（来源：[Recurrent Convolutional Neural Networks for Text Classification](https://www.aaai.org/ocs/index.php/AAAI/AAAI15/paper/download/9745/9552)）
 - [ ] DPCNN（来源：[Deep Pyramid Convolutional Neural Networks for Text Categorization](https://aclanthology.org/P17-1052/)）
 ## 2.2 domain-specific分类模型
+- [ ] FLA（来源：[Learning to Predict Charges for Criminal Cases with Legal Basis](https://aclanthology.org/D17-1289/)，LeSICiN使用的baseline）
+- [ ] DAPM（来源：[Modeling Dynamic Pairwise Attention for Crime Classification over Legal Articles](https://dl.acm.org/doi/10.1145/3209978.3210057)，LeSICiN使用的baseline）
+- [ ] HMN（来源：[Hierarchical Matching Network for Crime Classification](https://dl.acm.org/doi/10.1145/3331184.3331223)，LeSICiN使用的baseline）
+- [ ] HBERT（来源：[Neural Legal Judgment Prediction in English](https://arxiv.org/abs/1906.02059)，LeSICiN使用的baseline）
+- [ ] HLegalBERT（将HBERT中的BERT换成LegalBERT，LeSICiN使用的baseline）
+- [ ] LADAN（来源：[Distinguish Confusing Law Articles for Legal Judgment Prediction](https://aclanthology.org/2020.acl-main.280/)，LeSICiN使用的baseline）
 - [ ] LeSICiN（来源：[LeSICiN: A Heterogeneous Graph-Based Approach for Automatic Legal Statute Identification from Indian Legal Documents](https://arxiv.org/abs/2112.14731)）
-- [ ] ILLDM（只能用在特殊数据里，但是原始数据还没有公开。来源：[Interpretable Low-Resource Legal Decision Making](https://arxiv.org/abs/2201.01164)）
-- [ ] EPM（官方代码还没有完全公开，我发邮件问了作者他说他以后要全部公开的，所以我想等他们全部公开了再写。来源：[Legal Judgment Prediction via Event Extraction with Constraints](https://aclanthology.org/2022.acl-long.48/)
+- [ ] ILLDM（只能用在特殊数据里，但是GitHub项目里还没有放出所用的数据。来源：[Interpretable Low-Resource Legal Decision Making](https://arxiv.org/abs/2201.01164)）
+- [ ] EPM（官方代码还没有完全公开，我发邮件问了一作他说他以后要全部公开的，所以我想等他们全部公开了再写。来源：[Legal Judgment Prediction via Event Extraction with Constraints](https://aclanthology.org/2022.acl-long.48/)）
 ## 2.3 general-domain回归模型
 - [ ] 线性回归
+## 2.4 inductive link prediction模型
+- [ ] DEAL（来源：[Inductive Link Prediction for Nodes Having Only Attribute Information](https://arxiv.org/abs/2007.08053)，LeSICiN使用的baseline）
 
 # 3. 实验结果
 ## 3.1 论文中原有的结果
