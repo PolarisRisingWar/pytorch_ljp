@@ -59,9 +59,9 @@ def cail_analyse(data_path:str,accu_path:str="",law_path:str="",up:bool=False,da
             deduplicate_list=list(deduplicate)
             random.shuffle(deduplicate_list)
             train_set=deduplicate_list[:int(0.7*len(deduplicate))]
-            val_set= deduplicate_list[int(0.7*len(deduplicate)):int(0.8*len(deduplicate))]
+            val_set=deduplicate_list[int(0.7*len(deduplicate)):int(0.8*len(deduplicate))]
             test_set=deduplicate_list[int(0.8*len(deduplicate)):]
-            random.seed()  #TODO：不确定用这句话能不能消除seed
+            random.seed()  #消除已设置seed的影响
         elif data_config[0]=='big':
             train_set=open(train_big_path).readlines()
             test_set=open(test_big_path).readlines()+open(rest_path).readlines()
@@ -75,15 +75,16 @@ def cail_analyse(data_path:str,accu_path:str="",law_path:str="",up:bool=False,da
         raise Exception('我还没写使用预处理后的文件夹这部分功能，如果你用到了可以催我一下') #TODO: 把这个也写一下
     
 
-    #验证训练集/验证集/测试集之间没有交集（数据泄露情况）
+    #检查训练集/验证集/测试集之间的交集（数据泄露情况）
     try:
         intersection=set.intersection(set(train_set),set(val_set),set(test_set))
-        print('训练集样本数：'+str(len(train_set))+'验证集样本数：'+str(len(val_set))+'测试集样本数：'+str(len(test_set)))
+        print('训练集样本数：'+str(len(train_set))+'\n验证集样本数：'+str(len(val_set))+'\n测试集样本数：'+str(len(test_set)))
         print('训练集、验证集、测试集之间的交集样本数：'+str(len(intersection)))
     except NameError:  #没有验证集的情况
         intersection=set.intersection(set(train_set),set(test_set))
-        print('训练集样本数：'+str(len(train_set))+'测试集样本数：'+str(len(test_set)))
+        print('训练集样本数：'+str(len(train_set))+'\n测试集样本数：'+str(len(test_set)))
         print('训练集、测试集之间的交集样本数：'+str(len(intersection)))
+    #small：25
 
     #随机选一条数据，打印样本示例
     #事实描述文本和判决结果
@@ -116,7 +117,7 @@ def cail_analyse(data_path:str,accu_path:str="",law_path:str="",up:bool=False,da
     criminal_sum=0
     article_sum=0
     accusation_sum=0
-    for factor in tqdm(deduplicate_list):
+    for factor in tqdm([json.loads(x) for x in deduplicate_list]):
         article_list=factor["meta"]["relevant_articles"]
         article_sum+=len(article_list)
         for a in article_list:
@@ -133,18 +134,19 @@ def cail_analyse(data_path:str,accu_path:str="",law_path:str="",up:bool=False,da
     
     print(law_counts)
     print(accu_counts)
-    print(criminal_sum/len(deduplicate))
-    print(accusation_sum/len(deduplicate))
-    print(criminal_sum/len(deduplicate))  #这三个基本上都是1左右
+    print(criminal_sum/len(deduplicate_list))
+    print(accusation_sum/len(deduplicate_list))
+    print(criminal_sum/len(deduplicate_list))  #这三个基本上都是1左右
 
 
 def cail_json2str(d):
     j=json.loads(d)
-    return(str({"fact":j["fact"],
-                "meta":{"relevant_articles":sorted(j["meta"]["relevant_articles"]),
-                        "accusation":sorted(j["meta"]["accusation"]),
-                        "punish_of_money":j["meta"]["punish_of_money"],
-                        "criminals":sorted(j["meta"]["criminals"]),
-                        "term_of_imprisonment":{"death_penalty":j["meta"]["term_of_imprisonment"]["death_penalty"],
-                                                "imprisonment":j["meta"]["term_of_imprisonment"]["imprisonment"],
-                                                "life_imprisonment":j["meta"]["term_of_imprisonment"]["life_imprisonment"]}}}))
+    return(json.dumps({"fact":j["fact"],
+                        "meta":{"relevant_articles":sorted(j["meta"]["relevant_articles"]),
+                                "accusation":sorted(j["meta"]["accusation"]),
+                                "punish_of_money":j["meta"]["punish_of_money"],
+                                "criminals":sorted(j["meta"]["criminals"]),
+                                "term_of_imprisonment":{"death_penalty":j["meta"]["term_of_imprisonment"]["death_penalty"],
+                                                        "imprisonment":j["meta"]["term_of_imprisonment"]["imprisonment"],
+                                                        "life_imprisonment":j["meta"]["term_of_imprisonment"]["life_imprisonment"]}}},
+                    ensure_ascii=False))

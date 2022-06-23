@@ -1,7 +1,7 @@
 本项目旨在使用原生PyTorch统一实现法律判决预测LJP（legal judgment prediction）任务的当前各重要模型，包括对多种语言下多种公开数据集的预处理、多种子任务下的实现。  
 直接通过命令行即可调用torch_ljp/main.py文件，传入参数并得到对应的结果，需要预先在torch_ljp文件夹下创建config.py文件（由于真实文件的内容对用户来说无意义，因此没有上传，但是我上传了一个fakeconfig.py文件，把里面需要填的参数填上就行）。  
 具体的使用命令可参考example.txt。  
-op_examples文件夹是输出示例，详细内容请参考具体文件。
+op_examples文件夹是输出示例，见example.txt中介绍的对应的命令行。
 模型的预测指标及其计算方式详见metrics文件夹中的介绍。
 我所使用的系统环境中的重要版本见enviroment_v.txt所示。
 
