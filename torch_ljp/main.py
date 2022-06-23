@@ -2,9 +2,14 @@ import argparse
 parser = argparse.ArgumentParser()
 
 #通用参数
-parser.add_argument("-d","--dataset_name",default='CAIL',type=str,choices=['CAIL'])  #数据集名称，与README.md和config.py对应
+parser.add_argument("-d","--dataset_name",default=['CAIL'],nargs='+')
+#第一个参数是数据集名称，与README.md中的数据集名称对应
+#后面的参数是使用数据集的不同配置。如不使用-up参数，将根据不同的配置对数据集进行不同的处理。如使用-up参数，将直接忽略其功能
+#但这些参数都将出现在命名中
+#对不同配置的介绍见configs/dataset_name.md文件
 
-parser.add_argument("-up","--use_preprocessed",action='store_true')  #是否使用预处理后存储在本地的数据（路径由config.py指定）
+parser.add_argument("-up","--use_preprocessed",default=None)  #使用预处理后的数据，如传入字符串格式的路径，将直接使用
+#要求文件夹中
 
 parser.add_argument("-a","--analyse",action="store_true")  #是否打印对数据集的分析内容
 
@@ -41,10 +46,8 @@ parser.add_argument('-oa','--other_arguments',nargs='*')
 
 args = parser.parse_args()
 arg_dict=args.__dict__
+configuration_log=str(arg_dict)  #用str格式保存
 print(arg_dict)
-
-dataset_name=arg_dict['dataset_name']
-isAnalyse=arg_dict['analyse']
 
 import sys,os
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
@@ -52,7 +55,17 @@ sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 import config
 from torch_ljp.dataset_utils import cail_analyse
 
+dataset_name=arg_dict['dataset_name'][0]
+isAnalyse=arg_dict['analyse']
+
+#数据集路径
+if dataset_name=='CAIL':
+    data_path=config.cail_original_path
+if arg_dict['use_preprocessed']:
+    data_path=arg_dict['use_preprocessed']
+
 if isAnalyse:
     if dataset_name=='CAIL':
-        cail_analyse(data_path=config.cail_original_path,accu_path=config.cail_accu_path,law_path=config.cail_law_path)
+        cail_analyse(data_path=data_path,accu_path=config.cail_accu_path,law_path=config.cail_law_path,
+                    up=bool(arg_dict['use_preprocessed']),data_config=arg_dict['dataset_name'][1:])
 

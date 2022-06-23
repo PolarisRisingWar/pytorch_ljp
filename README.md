@@ -1,5 +1,5 @@
 本项目旨在使用原生PyTorch统一实现法律判决预测LJP（legal judgment prediction）任务的当前各重要模型，包括对多种语言下多种公开数据集的预处理、多种子任务下的实现。  
-直接通过命令行即可调用torch_ljp/main.py文件，传入参数并得到对应的结果，需要预先在torch_ljp文件夹下创建config.py文件（由于真实文件涉及个人隐私，因此没有上传，但是我上传了一个fakeconfig.py文件，把里面需要填的参数填上就行）。  
+直接通过命令行即可调用torch_ljp/main.py文件，传入参数并得到对应的结果，需要预先在torch_ljp文件夹下创建config.py文件（由于真实文件的内容对用户来说无意义，因此没有上传，但是我上传了一个fakeconfig.py文件，把里面需要填的参数填上就行）。  
 具体的使用命令可参考example.txt。  
 op_examples文件夹是输出示例，详细内容请参考具体文件。
 模型的预测指标及其计算方式详见metrics文件夹中的介绍。
@@ -95,7 +95,7 @@ op_examples文件夹是输出示例，详细内容请参考具体文件。
 #### [CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)
 使用CAIL2018原始任务范式。
 
-删除多被告情况，仅保留单一被告的案例；删除了出现频数低于30的罪名和法条；删除了不与特定罪名相关的102个法条（没看懂这句话是啥意思）。训练集是first_stage/train.json，测试集是 first_stage/test.json + restData/rest_data.json。用THULAC分词，Adam优化器，学习率为0.001，dropout rate是0.5，batch size是128
+训练集是first_stage/train.json，测试集是 first_stage/test.json + restData/rest_data.json（文中说，这个配置是删除多被告情况，仅保留单一被告的案例；删除了出现频数低于30的罪名和法条；删除了不与特定罪名相关的102个法条（没看懂这句话是啥意思））。用THULAC分词，Adam优化器，学习率为0.001，dropout rate是0.5，batch size是128
 
 baseline：
 ①TFIDF+SVM（SVM是线性核，特征维度是5000，用skip-gram训练200维词向量）

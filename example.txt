@@ -1,2 +1,2 @@
 打印数据分析内容：
-CAIL：python torch_ljp/main.py -a
+CAIL all 划分数据集的默认随机种子：python torch_ljp/main.py -a
