@@ -33,12 +33,10 @@ parser.add_argument("-m","--model",default=None)  #使用的模型。如置None�
 parser.add_argument('--mode',default='pipeline',choices=['pipeline','train','test'])  #流程模式。全流程（训练+验证+测试）、训练、测试/tuili
 
 parser.add_argument('-s','--sub_tasks',default='multi-task3')  #需要实现的子任务（需要对应数据集和模型）
-#multi-task3：law article prediction + charge prediction + term of penalty prediction
+#multi-task3：用multi-task范式训练3个任务：law article prediction + charge prediction + term of penalty prediction
 #law-article-prediction
 #chrage-prediction
 #term-of-penalty-prediction
-
-parser.add_argument('-j','--joint_learning',action='store_true')
 
 parser.add_argument('-dv','--gpu_device',default='cuda:0')  #这个只要是torch.device()可以接受的参数就行了
 
@@ -50,14 +48,14 @@ parser.add_argument('-l','--learning_rate',default=0.001,type=float)
 
 #不固定的参数
 parser.add_argument('-oa','--other_arguments',nargs='*')
-#我还在考虑要不要用字典的文本格式直接传入这个，包括损失函数（交叉熵或focal loss），激活函数，model-specific的超参，ensemble
+#包括损失函数（交叉熵或focal loss），激活函数，model-specific的超参，ensemble
 
 args = parser.parse_args()
 arg_dict=args.__dict__
 configuration_log=str(arg_dict)  #用str格式保存
 print(arg_dict)
 
-import sys,os
+import sys,os,time
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
 import config
@@ -65,6 +63,10 @@ from torch_ljp.dataset_utils.split import cail_split
 
 dataset_name=arg_dict['dataset_name'][0]
 isAnalyse=arg_dict['analyse']
+model_name=arg_dict['model']
+other_arguments=arg_dict['other_arguments']
+sub_tasks=arg_dict['sub_tasks']
+mode=arg_dict['mode']
 
 #划分数据集：目前的做法还是直接把所有数据集对象加载到内存中，以后再研究有没有什么更好的方法
 if arg_dict['use_preprocessed']:
@@ -81,3 +83,54 @@ if isAnalyse:
         cail_analyse(data_dict=dataset_dict,accu_path=config.cail_accu_path,law_path=config.cail_law_path,
                     data_config=arg_dict['dataset_name'][1:])
 
+#开始跑模型ing
+if model_name:
+    print('模型处理阶段：')
+    #general-domain文本分类模型
+    if model_name in ['fastText']:
+        from torch_ljp.dataset_utils.preprocess import cail2text_cls
+        dataset_dict=cail2text_cls(dataset_dict)
+        if model_name=='fastText':
+            import fasttext
+
+            #分词+预处理
+            if os.path.isdir(other_arguments[0]):  #TODO: 写其他情况
+                #需要做预处理
+                print('预处理fastText数据：')
+                import jieba
+                new_file_path=os.path.join(other_arguments[0],
+                        dataset_name+'_'.join(arg_dict['dataset_name'][1:])+'_'+sub_tasks+'_train'+str(time.time()).replace('.','_')+'.txt')
+                if sub_tasks=='law-article-prediction':
+                    with open(new_file_path,'w') as f:
+                        for key_name in ['train_set','val_set']:
+                            #因为fastText不用验证集，所以训练集和验证集全用作训练集
+                            if key_name in dataset_dict:
+                                for sample in dataset_dict[key_name]:
+                                    f.write(' '.join(sample['fact']))
+                                    for article in sample['article']:
+                                        f.write(' __label__'+str(article))
+                                    f.write('\n')
+                else:
+                    pass #TODO
+            else:
+                pass #TODO
+
+            if not mode=='test':
+                #训练
+                fasttext_model=fasttext.train_supervised(new_file_path)
+                #TODO: 储存模型
+            if not mode=='train':
+                with open(os.path.join(other_arguments[0],
+            dataset_name+'_'.join(arg_dict['dataset_name'][1:])+'_'+sub_tasks+'_test'+str(time.time()).replace('.','_')+'.txt'),'w') as f:
+                    for sample in dataset_dict['test_set']:
+                        f.write(' '.join(sample['fact']))
+                        for article in sample['article']:
+                            f.write(' __label__'+str(article))
+                        f.write('\n')
+                print(fasttext_model.test(os.path.join(other_arguments[0],
+                    dataset_name+'_'.join(arg_dict['dataset_name'][1:])+'_'+sub_tasks+'_test'+str(time.time()).replace('.','_')+'.txt')))
+                
+                
+            
+
+                

@@ -2,7 +2,7 @@ import json
 
 def split11(dataset:list):
     """
-    用于CAIL数据集将term of penalty属性划分为11组，做multi-class one-label分类任务用
+    用于CAIL数据集，将term of penalty属性划分为11组，做multi-class one-label分类任务用
     入参是一个由cail_json2str()得到的字符串组成的list
     返回的是一个由dict组成的list，每个元素的键是：fact, charge, article, term, criminals
     """
@@ -49,3 +49,11 @@ def cail_json2str(d):
                                                         "imprisonment":j["meta"]["term_of_imprisonment"]["imprisonment"],
                                                         "life_imprisonment":j["meta"]["term_of_imprisonment"]["life_imprisonment"]}}},
                     ensure_ascii=False))
+
+def cail2text_cls(data_dict:dict):
+    """将经数据集划分后的CAIL数据集的data_dict中的每个值（dict组成的list）的每个元素转换为键为text, charge, article, term的字典"""
+    #TODO：软化split11
+    newd={}
+    for kvpair in data_dict.items():
+        newd[kvpair[0]]=[{'fact':x['fact'],'charge':x['charge'],'article':x['article'],'term':x['term']} for x in split11(kvpair[1])]
+    return newd

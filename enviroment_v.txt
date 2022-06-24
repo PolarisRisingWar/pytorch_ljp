@@ -2,6 +2,7 @@ Anaconda 4.13.0
 Python 3.8.13
 
 分词工具：会仅调用命令行参数选择的工具包
+jieba 0.42.1（安装命令：pip install jieba）
 
 PyTorch 1.11.0
 cudatoolkit 10.2
