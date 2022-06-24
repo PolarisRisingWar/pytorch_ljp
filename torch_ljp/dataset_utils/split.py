@@ -14,6 +14,7 @@ def cail_split(data_path:str,data_config:list=[]):
 
     #划分数据集
     if len(data_config)==0 or data_config[0]=='all':
+        from torch_ljp.dataset_utils.preprocess import cail_json2str
         filepaths=[train_small_path,valid_small_path,test_small_path,train_big_path,test_big_path,final_test_path,rest_path]
 
         print('实验中用到的数据及其对应的样本数：')
@@ -31,8 +32,8 @@ def cail_split(data_path:str,data_config:list=[]):
         print('不去重样本总数：'+str(duplicate_no))  #2916228
         print('去重样本总数：'+str(len(deduplicate)))  #2784403
 
-        if len(data_config)>1 and 'random_seed' in eval(data_config[1]):
-            random.seed(data_config[1]['random_seed'])
+        if len(data_config)>1 and 'random_seed' in data_config:
+            random.seed(data_config[data_config.index('random_seed')+1])
         else:
             random.seed(14530529)
         
@@ -52,15 +53,4 @@ def cail_split(data_path:str,data_config:list=[]):
         test_set=open(test_small_path).readlines()
         return {'train_set':train_set,'val_set':val_set,'test_set':test_set}
 
-def cail_json2str(d):
-    j=json.loads(d)
-    #TODO: 感觉这样太蠢了，想办法搞成那种递归根据键值顺序排列的做法试试
-    return(json.dumps({"fact":j["fact"],
-                        "meta":{"relevant_articles":sorted(j["meta"]["relevant_articles"]),
-                                "accusation":sorted(j["meta"]["accusation"]),
-                                "punish_of_money":j["meta"]["punish_of_money"],
-                                "criminals":sorted(j["meta"]["criminals"]),
-                                "term_of_imprisonment":{"death_penalty":j["meta"]["term_of_imprisonment"]["death_penalty"],
-                                                        "imprisonment":j["meta"]["term_of_imprisonment"]["imprisonment"],
-                                                        "life_imprisonment":j["meta"]["term_of_imprisonment"]["life_imprisonment"]}}},
-                    ensure_ascii=False))
+

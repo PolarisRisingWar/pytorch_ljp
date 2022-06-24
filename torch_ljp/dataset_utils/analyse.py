@@ -25,6 +25,7 @@ def cail_analyse(data_dict:dict,accu_path:str="",law_path:str="",data_config:lis
     law_counts=[0 for _ in range(len(law))]
     
     #检查训练集/验证集/测试集之间的交集（数据泄露情况）
+    #注意：非all情况的交集数只能作为参考
     try:
         intersection=set.intersection(set(data_dict['train_set']),set(data_dict['val_set']),set(data_dict['test_set']))
         print('训练集样本数：'+str(len(data_dict['train_set']))+'\n验证集样本数：'+str(len(data_dict['val_set'])))
@@ -71,23 +72,30 @@ def cail_analyse(data_dict:dict,accu_path:str="",law_path:str="",data_config:lis
     accusation_sum=0
 
     #对term of penalty的处理
-    from torch_ljp.dataset_utils.preprocess import split11
-    split11_list=split11(deduplicate_list)
-    print(split11_list[123])
+    if len(data_config)==0 or ('term_split' not in data_config) or (data_config[data_config.index('term_split')+1]=='split11'):
+        #TODO: 处理非split11的情况
+        print('将term of penalty处理为11类的形式')
+        from torch_ljp.dataset_utils.preprocess import split11
+        split11_list=split11(deduplicate_list)
+        split11_counts=[0 for _ in range(11)]
+    else:
+        split11_list=[json.loads(x) for x in deduplicate_list]
+        #其实还没考虑这种情况
 
     for factor in tqdm(split11_list):
-        article_list=factor["meta"]["relevant_articles"]
+        article_list=factor['article']
         article_sum+=len(article_list)
         for a in article_list:
             law_index=law.index(str(a))  #这个我发现就有的是str，有的是int，比较的狗
             law_counts[law_index]+=1
-        accusation=factor["meta"]["accusation"]
+        accusation=factor['charge']
         accusation_sum+=len(accusation)
         for a in accusation:
             accu_index=accu.index(re.sub('[\[\]]','',a))  #边缘例子：'[生产、销售]伪劣产品'
             accu_counts[accu_index]+=1
-        criminals=factor["meta"]["criminals"]
+        criminals=factor["criminals"]
         criminal_sum+=len(criminals)
+        split11_counts[int(factor['term'])]+=1  #TODO: 考虑不用split11的情况
         
     
     print(law_counts)
@@ -95,6 +103,7 @@ def cail_analyse(data_dict:dict,accu_path:str="",law_path:str="",data_config:lis
     print(criminal_sum/len(deduplicate_list))
     print(accusation_sum/len(deduplicate_list))
     print(criminal_sum/len(deduplicate_list))  #这三个基本上都是1左右
+    print(split11_counts)
 
 
 
