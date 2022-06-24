@@ -35,7 +35,7 @@ parser.add_argument('--mode',default='pipeline',choices=['pipeline','train','tes
 parser.add_argument('-s','--sub_tasks',default='multi-task3')  #需要实现的子任务（需要对应数据集和模型）
 #multi-task3：用multi-task范式训练3个任务：law article prediction + charge prediction + term of penalty prediction
 #law-article-prediction
-#chrage-prediction
+#charge-prediction
 #term-of-penalty-prediction
 
 parser.add_argument('-dv','--gpu_device',default='cuda:0')  #这个只要是torch.device()可以接受的参数就行了
@@ -55,8 +55,9 @@ arg_dict=args.__dict__
 configuration_log=str(arg_dict)  #用str格式保存
 print(arg_dict)
 
-import sys,os,time
+import sys,os
 from tqdm import tqdm
+from datetime import datetime
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
 import config
@@ -93,35 +94,18 @@ if model_name:
         dataset_dict=cail2text_cls(dataset_dict)
         if model_name=='fastText':
             import fasttext
+            from torch_ljp.dataset_utils.preprocess import fasttext_preprocess
 
             if os.path.isdir(other_arguments[0]):
                 #需要做预处理
                 print('预处理fastText数据：')
-                import jieba
                 train_file_path=os.path.join(other_arguments[0],
-                        dataset_name+'_'.join(arg_dict['dataset_name'][1:])+'_'+sub_tasks+'_train'+str(time.time()).replace('.','_')+'.txt')
+                        dataset_name+'_'.join(arg_dict['dataset_name'][1:])+'_'+sub_tasks+'_train'+\
+                                                                                str(datetime.now()).replace('.','_').replace(' ','_')+'.txt')
                 test_file_path=os.path.join(other_arguments[0],
-                        dataset_name+'_'.join(arg_dict['dataset_name'][1:])+'_'+sub_tasks+'_test'+str(time.time()).replace('.','_')+'.txt')
-                if sub_tasks=='law-article-prediction':
-                    with open(train_file_path,'w') as f:
-                        for key_name in ['train_set','val_set']:
-                            #因为fastText不用验证集，所以训练集和验证集全用作训练集
-                            if key_name in dataset_dict:
-                                for sample in tqdm(dataset_dict[key_name]):
-                                    f.write(' '.join(jieba.cut(sample['fact'])))
-                                    for article in sample['article']:
-                                        f.write(' __label__'+str(article))
-                                    f.write('\n')
-                    print('成功储存训练数据集在'+train_file_path+'路径')
-                    with open(test_file_path,'w') as f:
-                        for sample in tqdm(dataset_dict['test_set']):
-                            f.write(' '.join(jieba.cut(sample['fact'])))
-                            for article in sample['article']:
-                                f.write(' __label__'+str(article))
-                            f.write('\n')
-                    print('成功储存测试数据集在'+test_file_path+'路径')
-                else:
-                    pass #TODO
+                        dataset_name+'_'.join(arg_dict['dataset_name'][1:])+'_'+sub_tasks+'_test'+\
+                                                                                str(datetime.now()).replace('.','_').replace(' ','_')+'.txt')
+                fasttext_preprocess(sub_tasks,train_file_path,test_file_path,dataset_dict)
             else:
                 #不需要做预处理
                 train_file_path=other_arguments[0]
@@ -132,7 +116,7 @@ if model_name:
                 fasttext_model=fasttext.train_supervised(train_file_path)
                 #TODO: 储存模型
             if not mode=='train':
-                #测试
+                #TODO: 测试
                 print(fasttext_model.test(test_file_path))
                 
                 

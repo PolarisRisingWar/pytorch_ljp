@@ -1,4 +1,5 @@
 import json
+from tqdm import tqdm
 
 def split11(dataset:list):
     """
@@ -57,3 +58,24 @@ def cail2text_cls(data_dict:dict):
     for kvpair in data_dict.items():
         newd[kvpair[0]]=[{'fact':x['fact'],'charge':x['charge'],'article':x['article'],'term':x['term']} for x in split11(kvpair[1])]
     return newd
+
+def fasttext_preprocess(task:str,train_file_path:str,test_file_path:str,dataset_dict:dict):
+    import jieba
+    task_key_map={'law-article-prediction':'article','charge-prediction':'charge','term-of-penalty-prediction':'term'}
+    with open(train_file_path,'w') as f:
+        for key_name in ['train_set','val_set']:
+            #因为fastText不用验证集，所以训练集和验证集全用作训练集
+            if key_name in dataset_dict:
+                for sample in tqdm(dataset_dict[key_name]):
+                    f.write(' '.join(jieba.cut(sample['fact'])))
+                    for article in sample[task_key_map[task]]:
+                        f.write(' __label__'+str(article))
+                    f.write('\n')
+    print('成功储存训练数据集在'+train_file_path+'路径')
+    with open(test_file_path,'w') as f:
+        for sample in tqdm(dataset_dict['test_set']):
+            f.write(' '.join(jieba.cut(sample['fact'])))
+            for article in sample[task_key_map[task]]:
+                f.write(' __label__'+str(article))
+            f.write('\n')
+    print('成功储存测试数据集在'+test_file_path+'路径')
