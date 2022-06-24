@@ -1,6 +1,8 @@
 #本项目分析数据集的方法参考了以下论文中对数据集进行描述的部分：
 # 1. CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction
 
+#TODO：打印文本的句子数、词数、char数、token数
+
 import random,os,json,re
 from tqdm import tqdm
 

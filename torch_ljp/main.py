@@ -1,6 +1,8 @@
 import argparse
 parser = argparse.ArgumentParser()
 
+#参数的使用介绍请参考configs文件夹对应参数全称的文件
+
 #通用参数
 parser.add_argument("-d","--dataset_name",default=['CAIL'],nargs='+')
 #第一个参数是数据集名称，与README.md中的数据集名称对应
@@ -28,7 +30,7 @@ parser.add_argument('-we','--word embedding',default='tfidf')  #词嵌入方法�
 
 parser.add_argument("-m","--model",default=None)  #使用的模型。如置None则为不运行模型（仅做数据分析和预处理等）
 
-parser.add_argument('-s','--sub_tasks',default='all')  #需要实现的子任务（有些模型将会忽视此参数）
+parser.add_argument('-s','--sub_tasks',default='multi-task3')  #需要实现的子任务（有些模型将会忽视此参数）
 
 parser.add_argument('-j','--joint_learning',action='store_true')
 

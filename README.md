@@ -39,24 +39,25 @@ op_examples文件夹是输出示例，见example.txt中介绍的对应的命令�
 ## 2.1 general-domain分类模型（非纯预训练模型的）
 - [ ] TFIDF+SVM（又名LibSVM）：定类数据，多分类单标签范式。（TFIDF来自[Term-weighting approaches in automatic text retrieval](https://www.scinapse.io/papers/1978394996)，SVM来自[Least Squares Support Vector Machine Classifiers](https://lirias.kuleuven.be/retrieve/88556)。[CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)使用的baseline。代码参考：[CAIL2018/baseline at master · thunlp/CAIL2018](https://github.com/thunlp/CAIL2018/tree/master/baseline)）
 - [ ] FastText（[CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)使用的baseline）
-- [ ] TextCNN（又名CNN）（来源：[Convolutional neural networks for sentence classification](https://arxiv.org/abs/1408.5882)，[CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)使用的baseline）
+- [ ] TextCNN（又名CNN）（来源：[Convolutional neural networks for sentence classification](https://arxiv.org/abs/1408.5882)，[CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction](https://arxiv.org/abs/1807.02478)、LADAN使用的baseline）
 - [ ] LSTM（来源：[Long short-term memory](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.676.4320&rep=rep1&type=pdf)）
 - [ ] GRU（来源：[Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation](https://arxiv.org/abs/1406.1078))
 - [ ] RCNN（来源：[Recurrent Convolutional Neural Networks for Text Classification](https://www.aaai.org/ocs/index.php/AAAI/AAAI15/paper/download/9745/9552)）
-- [ ] HAN（来源：[Hierarchical Attention Networks for Document Classification](https://aclanthology.org/N16-1174/)）
+- [ ] HAN（又名HARNN）（来源：[Hierarchical Attention Networks for Document Classification](https://aclanthology.org/N16-1174/)，LADAN使用的baseline）
 - [ ] DPCNN（来源：[Deep Pyramid Convolutional Neural Networks for Text Categorization](https://aclanthology.org/P17-1052/)）
 - [ ] 随机森林
 ## 2.2 domain-specific分类模型（非纯预训练模型的）
-- [ ] MLAC（又名FLA）（来源：[Learning to Predict Charges for Criminal Cases with Legal Basis](https://aclanthology.org/D17-1289/)，LeSICiN、EPM使用的baseline）
+- [ ] MLAC（又名FLA）（来源：[Learning to Predict Charges for Criminal Cases with Legal Basis](https://aclanthology.org/D17-1289/)，LADAN、LeSICiN、EPM使用的baseline）
 - [ ] DAPM（来源：[Modeling Dynamic Pairwise Attention for Crime Classification over Legal Articles](https://dl.acm.org/doi/10.1145/3209978.3210057)，LeSICiN使用的baseline）
-- [ ] TOPJUDGE（来源：[Legal Judgment Prediction via Topological Learning](https://aclanthology.org/D18-1390/)，EPM使用的baseline）
+- [ ] TOPJUDGE（来源：[Legal Judgment Prediction via Topological Learning](https://aclanthology.org/D18-1390/)，LANDAN、EPM使用的baseline）
+- [ ] Few-Shot（来源：[Few-Shot Charge Prediction with Discriminative Legal Attributes](https://aclanthology.org/C18-1041/)，LADAN使用的baseline）
 - [ ] HMN（来源：[Hierarchical Matching Network for Crime Classification](https://dl.acm.org/doi/10.1145/3331184.3331223)，LeSICiN使用的baseline）
-- [ ] MPBFN（来源：[Legal Judgment Prediction via Multi-Perspective Bi-Feedback Network](https://www.ijcai.org/proceedings/2019/567)，EPM使用的baseline）
+- [ ] MPBFN（又名MPBFN-WCA）（来源：[Legal Judgment Prediction via Multi-Perspective Bi-Feedback Network](https://www.ijcai.org/proceedings/2019/567)，LADAN、EPM使用的baseline）
 - [ ] HBERT（来源：[Neural Legal Judgment Prediction in English](https://arxiv.org/abs/1906.02059)，LeSICiN使用的baseline）
 - [ ] HLegalBERT（将HBERT中的BERT换成LegalBERT，LeSICiN使用的baseline）
 - [ ] LegalAtt（来源：[Charge Prediction with Legal Attention](https://link.springer.com/chapter/10.1007/978-3-030-32233-5_35)）
 - [ ] HLCP（来源：[Legal Cause Prediction with Inner Descriptions and Outer Hierarchies](https://link.springer.com/chapter/10.1007/978-3-030-32381-3_46)）
-- [ ] LADAN（来源：[Distinguish Confusing Law Articles for Legal Judgment Prediction](https://aclanthology.org/2020.acl-main.280/)，LeSICiN、EPM使用的baseline）
+- [ ] LADAN（来源：[Distinguish Confusing Law Articles for Legal Judgment Prediction](https://aclanthology.org/2020.acl-main.280/)，LeSICiN、EPM使用的baseline。代码参考：[prometheusXN/LADAN: The source code of article "Distinguish Confusing Law Articles for Legal Judgment Prediction", ACL 2020](https://github.com/prometheusXN/LADAN)）
 - [ ] MSJudge（来源：[Legal Judgment Prediction with Multi-Stage Case Representation Learning in the Real Court Setting](https://arxiv.org/abs/2107.05192)）
 - [ ] R-former（来源：[Legal Judgment Prediction via Relational Learning](https://dl.acm.org/doi/10.1145/3404835.3462931)）
 - [ ] NeurJudge（来源：[NeurJudge: A Circumstance-aware Neural Framework for Legal Judgment Prediction](https://dl.acm.org/doi/10.1145/3404835.3462826)，EPM使用的baseline）
@@ -75,12 +76,12 @@ op_examples文件夹是输出示例，见example.txt中介绍的对应的命令�
 - [ ] DCSCP（来源：[Charge prediction modeling with interpretation enhancement driven by double-layer criminal system](https://link.springer.com/article/10.1007/s11280-021-00873-8)）
 ## 2.3 预训练模型的分类模型
 ### 2.3.1 general-domain
-- [ ] Bert
-- [ ] RoBerta
-- [ ] DistillBert
-- [ ] XLNet
-- [ ] NEZHA
-- [ ] Longformer
+- [ ] Bert（来源：[BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding](https://arxiv.org/abs/1810.04805)）
+- [ ] RoBerta（来源：[Roberta: A robustly optimized bert pretraining approach](https://arxiv.org/abs/1907.11692)）
+- [ ] DistillBert（来源：[DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter](https://arxiv.org/abs/1910.01108)）
+- [ ] XLNet（来源：[XLNet: Generalized Autoregressive Pretraining for Language Understanding](https://arxiv.org/abs/1906.08237)）
+- [ ] NEZHA（来源：[NEZHA: Neural Contextualized Representation for Chinese Language Understanding](https://arxiv.org/abs/1909.00204)）
+- [ ] Longformer（来源：[Longformer: The Long-Document Transformer](https://arxiv.org/abs/2004.05150)）
 ### 2.3.2 domain-specific
 - [ ] LegalBert（来源：[LEGAL-BERT: The Muppets straight out of Law School](https://arxiv.org/abs/2010.02559)）
 - [ ] Lawformer（来源：[Lawformer: A Pre-trained Language Model for Chinese Legal Long Documents](https://arxiv.org/abs/2105.03887)）
