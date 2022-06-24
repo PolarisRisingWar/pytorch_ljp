@@ -30,7 +30,13 @@ parser.add_argument('-we','--word embedding',default='tfidf')  #词嵌入方法�
 
 parser.add_argument("-m","--model",default=None)  #使用的模型。如置None则为不运行模型（仅做数据分析和预处理等）
 
-parser.add_argument('-s','--sub_tasks',default='multi-task3')  #需要实现的子任务（有些模型将会忽视此参数）
+parser.add_argument('--mode',default='pipeline',choices=['pipeline','train','test'])  #流程模式。全流程（训练+验证+测试）、训练、测试/tuili
+
+parser.add_argument('-s','--sub_tasks',default='multi-task3')  #需要实现的子任务（需要对应数据集和模型）
+#multi-task3：law article prediction + charge prediction + term of penalty prediction
+#law-article-prediction
+#chrage-prediction
+#term-of-penalty-prediction
 
 parser.add_argument('-j','--joint_learning',action='store_true')
 
@@ -55,19 +61,23 @@ import sys,os
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
 import config
-from torch_ljp.dataset_utils import cail_analyse
+from torch_ljp.dataset_utils.split import cail_split
 
 dataset_name=arg_dict['dataset_name'][0]
 isAnalyse=arg_dict['analyse']
 
-#数据集路径
-if dataset_name=='CAIL':
-    data_path=config.cail_original_path
+#划分数据集：目前的做法还是直接把所有数据集对象加载到内存中，以后再研究有没有什么更好的方法
 if arg_dict['use_preprocessed']:
-    data_path=arg_dict['use_preprocessed']
+    pass  #TODO: 做这个
+else:
+    print('数据划分阶段：')
+    if dataset_name=='CAIL':
+        dataset_dict=cail_split(data_path=config.cail_original_path,data_config=arg_dict['dataset_name'][1:])
 
 if isAnalyse:
+    print('\n数据分析阶段：')
     if dataset_name=='CAIL':
-        cail_analyse(data_path=data_path,accu_path=config.cail_accu_path,law_path=config.cail_law_path,
-                    up=bool(arg_dict['use_preprocessed']),data_config=arg_dict['dataset_name'][1:])
+        from torch_ljp.dataset_utils import cail_analyse
+        cail_analyse(data_dict=dataset_dict,accu_path=config.cail_accu_path,law_path=config.cail_law_path,
+                    data_config=arg_dict['dataset_name'][1:])
 

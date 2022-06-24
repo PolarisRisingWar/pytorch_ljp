@@ -2,3 +2,13 @@ Anaconda 4.13.0
 Python 3.8.13
 
 分词工具：会仅调用命令行参数选择的工具包
+
+PyTorch 1.11.0
+cudatoolkit 10.2
+numpy 1.22.3
+（安装命令：conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch）
+
+可选：当使用fastText模型时：
+    scipy 1.7.3（安装命令：conda install scipy）
+    pybind11 2.9（安装命令：conda install -c conda-forge pybind11）
+    fastText 0.9.2（安装命令：pip install fasttext）

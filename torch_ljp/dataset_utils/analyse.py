@@ -11,7 +11,7 @@ from torch_ljp.general_utils.an_to_cn import an2cn
 dataset_utils_path=os.path.dirname(os.path.realpath(__file__))
 cn_crimnal_law_path=os.path.join(dataset_utils_path,'other_data','cn_criminal_law.txt')
 
-def cail_analyse(data_path:str,accu_path:str="",law_path:str="",up:bool=False,data_config:list=[]):
+def cail_analyse(data_dict:dict,accu_path:str="",law_path:str="",data_config:list=[]):
     """
     对CAIL数据集进行分析
     """
@@ -23,69 +23,19 @@ def cail_analyse(data_path:str,accu_path:str="",law_path:str="",up:bool=False,da
     accu_counts=[0 for _ in range(len(accu))]  #每个accu标签对应的样本数：去重+multi-label
     law=[x.strip() for x in open(law_path).readlines()]
     law_counts=[0 for _ in range(len(law))]
-
-    #确定本地储存的数据文件路径
-    if not up:
-        train_small_path=os.path.join(data_path,'exercise_contest','data_train.json')
-        valid_small_path=os.path.join(data_path,'exercise_contest','data_valid.json')
-        test_small_path=os.path.join(data_path,'exercise_contest','data_test.json')
-        train_big_path=os.path.join(data_path,'first_stage','train.json')
-        test_big_path=os.path.join(data_path,'first_stage','test.json')
-        final_test_path=os.path.join(data_path,'final_test.json')
-        rest_path=os.path.join(data_path,'restData','rest_data.json')
-
-        #划分数据集
-        if len(data_config)==0 or data_config[0]=='all':
-            filepaths=[train_small_path,valid_small_path,test_small_path,train_big_path,test_big_path,final_test_path,rest_path]
-
-            print('实验中用到的数据及其对应的样本数：')
-
-            #TODO: 以下这种写法会导致样本顺序乱掉。暂时没有保持顺序的需求所以没管这事
-
-            #分别统计各个数据文件的样本数，
-            duplicate_no=0
-            deduplicate=set()
-            for filepath in filepaths:
-                thelist=open(filepath).readlines()
-                print(filepath+'文件，样本数：'+str(len(thelist)))
-                duplicate_no+=len(thelist)
-                deduplicate.update([cail_json2str(x) for x in thelist])
-            print('\n不去重样本总数：'+str(duplicate_no))  #2916228
-            print('去重样本总数：'+str(len(deduplicate)))  #2784403
-
-            if len(data_config)>1:
-                random.seed(data_config[1])
-            else:
-                random.seed(14530529)
-            
-            deduplicate_list=list(deduplicate)
-            random.shuffle(deduplicate_list)
-            train_set=deduplicate_list[:int(0.7*len(deduplicate))]
-            val_set=deduplicate_list[int(0.7*len(deduplicate)):int(0.8*len(deduplicate))]
-            test_set=deduplicate_list[int(0.8*len(deduplicate)):]
-            random.seed()  #消除已设置seed的影响
-        elif data_config[0]=='big':
-            train_set=open(train_big_path).readlines()
-            test_set=open(test_big_path).readlines()+open(rest_path).readlines()
-            deduplicate_list=train_set+test_set
-        elif data_config[0]=='small':
-            train_set=open(train_small_path).readlines()
-            val_set=open(valid_small_path).readlines()
-            test_set=open(test_small_path).readlines()
-            deduplicate_list=train_set+val_set+test_set
-    else:
-        raise Exception('我还没写使用预处理后的文件夹这部分功能，如果你用到了可以催我一下') #TODO: 把这个也写一下
     
-
     #检查训练集/验证集/测试集之间的交集（数据泄露情况）
     try:
-        intersection=set.intersection(set(train_set),set(val_set),set(test_set))
-        print('训练集样本数：'+str(len(train_set))+'\n验证集样本数：'+str(len(val_set))+'\n测试集样本数：'+str(len(test_set)))
+        intersection=set.intersection(set(data_dict['train_set']),set(data_dict['val_set']),set(data_dict['test_set']))
+        print('训练集样本数：'+str(len(data_dict['train_set']))+'\n验证集样本数：'+str(len(data_dict['val_set'])))
+        print('测试集样本数：'+str(len(data_dict['test_set'])))
         print('训练集、验证集、测试集之间的交集样本数：'+str(len(intersection)))
-    except NameError:  #没有验证集的情况
-        intersection=set.intersection(set(train_set),set(test_set))
-        print('训练集样本数：'+str(len(train_set))+'\n测试集样本数：'+str(len(test_set)))
+        deduplicate_list=data_dict['train_set']+data_dict['val_set']+data_dict['test_set']
+    except KeyError:  #没有验证集的情况，即数据集划分为big时
+        intersection=set.intersection(set(data_dict['train_set']),set(data_dict['test_set']))
+        print('训练集样本数：'+str(len(data_dict['train_set']))+'\n测试集样本数：'+str(len(data_dict['test_set'])))
         print('训练集、测试集之间的交集样本数：'+str(len(intersection)))
+        deduplicate_list=data_dict['train_set']+data_dict['test_set']
     #small：25
 
     #随机选一条数据，打印样本示例
@@ -119,7 +69,13 @@ def cail_analyse(data_path:str,accu_path:str="",law_path:str="",up:bool=False,da
     criminal_sum=0
     article_sum=0
     accusation_sum=0
-    for factor in tqdm([json.loads(x) for x in deduplicate_list]):
+
+    #对term of penalty的处理
+    from torch_ljp.dataset_utils.preprocess import split11
+    split11_list=split11(deduplicate_list)
+    print(split11_list[123])
+
+    for factor in tqdm(split11_list):
         article_list=factor["meta"]["relevant_articles"]
         article_sum+=len(article_list)
         for a in article_list:
@@ -141,14 +97,6 @@ def cail_analyse(data_path:str,accu_path:str="",law_path:str="",up:bool=False,da
     print(criminal_sum/len(deduplicate_list))  #这三个基本上都是1左右
 
 
-def cail_json2str(d):
-    j=json.loads(d)
-    return(json.dumps({"fact":j["fact"],
-                        "meta":{"relevant_articles":sorted(j["meta"]["relevant_articles"]),
-                                "accusation":sorted(j["meta"]["accusation"]),
-                                "punish_of_money":j["meta"]["punish_of_money"],
-                                "criminals":sorted(j["meta"]["criminals"]),
-                                "term_of_imprisonment":{"death_penalty":j["meta"]["term_of_imprisonment"]["death_penalty"],
-                                                        "imprisonment":j["meta"]["term_of_imprisonment"]["imprisonment"],
-                                                        "life_imprisonment":j["meta"]["term_of_imprisonment"]["life_imprisonment"]}}},
-                    ensure_ascii=False))
+
+def ilsi_analyse(data_path:str,up:bool=False,data_config:list=[]):
+    return
