@@ -56,6 +56,7 @@ configuration_log=str(arg_dict)  #用str格式保存
 print(arg_dict)
 
 import sys,os,time
+from tqdm import tqdm
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
 import config
@@ -93,42 +94,46 @@ if model_name:
         if model_name=='fastText':
             import fasttext
 
-            #分词+预处理
-            if os.path.isdir(other_arguments[0]):  #TODO: 写其他情况
+            if os.path.isdir(other_arguments[0]):
                 #需要做预处理
                 print('预处理fastText数据：')
                 import jieba
-                new_file_path=os.path.join(other_arguments[0],
+                train_file_path=os.path.join(other_arguments[0],
                         dataset_name+'_'.join(arg_dict['dataset_name'][1:])+'_'+sub_tasks+'_train'+str(time.time()).replace('.','_')+'.txt')
+                test_file_path=os.path.join(other_arguments[0],
+                        dataset_name+'_'.join(arg_dict['dataset_name'][1:])+'_'+sub_tasks+'_test'+str(time.time()).replace('.','_')+'.txt')
                 if sub_tasks=='law-article-prediction':
-                    with open(new_file_path,'w') as f:
+                    with open(train_file_path,'w') as f:
                         for key_name in ['train_set','val_set']:
                             #因为fastText不用验证集，所以训练集和验证集全用作训练集
                             if key_name in dataset_dict:
-                                for sample in dataset_dict[key_name]:
-                                    f.write(' '.join(sample['fact']))
+                                for sample in tqdm(dataset_dict[key_name]):
+                                    f.write(' '.join(jieba.cut(sample['fact'])))
                                     for article in sample['article']:
                                         f.write(' __label__'+str(article))
                                     f.write('\n')
+                    print('成功储存训练数据集在'+train_file_path+'路径')
+                    with open(test_file_path,'w') as f:
+                        for sample in tqdm(dataset_dict['test_set']):
+                            f.write(' '.join(jieba.cut(sample['fact'])))
+                            for article in sample['article']:
+                                f.write(' __label__'+str(article))
+                            f.write('\n')
+                    print('成功储存测试数据集在'+test_file_path+'路径')
                 else:
                     pass #TODO
             else:
-                pass #TODO
+                #不需要做预处理
+                train_file_path=other_arguments[0]
+                test_file_path=other_arguments[1]
 
             if not mode=='test':
                 #训练
-                fasttext_model=fasttext.train_supervised(new_file_path)
+                fasttext_model=fasttext.train_supervised(train_file_path)
                 #TODO: 储存模型
             if not mode=='train':
-                with open(os.path.join(other_arguments[0],
-            dataset_name+'_'.join(arg_dict['dataset_name'][1:])+'_'+sub_tasks+'_test'+str(time.time()).replace('.','_')+'.txt'),'w') as f:
-                    for sample in dataset_dict['test_set']:
-                        f.write(' '.join(sample['fact']))
-                        for article in sample['article']:
-                            f.write(' __label__'+str(article))
-                        f.write('\n')
-                print(fasttext_model.test(os.path.join(other_arguments[0],
-                    dataset_name+'_'.join(arg_dict['dataset_name'][1:])+'_'+sub_tasks+'_test'+str(time.time()).replace('.','_')+'.txt')))
+                #测试
+                print(fasttext_model.test(test_file_path))
                 
                 
             

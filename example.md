@@ -5,4 +5,5 @@
 - CAIL big，默认配置（将term of penalty划分为11类）：`python torch_ljp/main.py -d CAIL big -a` 输出示例：op_examples/analyse/cail-big.out
 
 fastText分类：
-- CAIL small 默认配置（将term of penalty划分为11类，测试阶段输出1个标签），做law article prediction任务，使用jieba包分词，全流程，中间数据储存在path路径上：`python torch_ljp/main.py -d CAIL small -ws jieba -m fastText -s law-article-prediction -oa path`
+- CAIL small 默认配置（将term of penalty划分为11类，测试阶段输出1个标签），做law article prediction任务，使用jieba包分词，全流程，中间数据储存在path路径（文件夹）上：`python torch_ljp/main.py -d CAIL small -ws jieba -m fastText -s law-article-prediction -oa path`
+- CAIL small 默认配置（将term of penalty划分为11类，测试阶段输出1个标签），做law article prediction任务，使用jieba包分词，全流程，使用训练集数据文件path1和测试集数据文件path2：`python torch_ljp/main.py -d CAIL small -ws jieba -m fastText -s law-article-prediction -oa path1 path2`
