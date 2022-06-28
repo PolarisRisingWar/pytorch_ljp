@@ -15,7 +15,7 @@ parser.add_argument("-up","--use_preprocessed",default=None)  #使用预处理�
 
 parser.add_argument("-a","--analyse",action="store_true")  #是否打印对数据集的分析内容
 
-parser.add_argument('-ws','-word_segmentation',default='NLTK',nargs='+')  #分词工具，第一个入参是工具名称，后面的入参是其他参数
+parser.add_argument('-ws','--word_segmentation',default='NLTK',nargs='+')  #分词工具，第一个入参是工具名称，后面的入参是其他参数
 #英文：NLTK
 #中文：jieba
 
@@ -64,9 +64,10 @@ arg_dict=args.__dict__
 configuration_log=str(arg_dict)  #用str格式保存
 print(arg_dict)
 
-import sys,os,torch
+import sys,os,random,torch
 from tqdm import tqdm
 from datetime import datetime
+import numpy as np
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
 import config
@@ -79,6 +80,7 @@ other_arguments=arg_dict['other_arguments']
 sub_tasks=arg_dict['sub_tasks']
 mode=arg_dict['mode']
 word_segmentation=arg_dict['word_segmentation']
+SEED=arg_dict['reappear_seed']
 
 print('配置异常检测和复现环境...')
 if arg_dict['detect_anomaly']:
@@ -86,10 +88,14 @@ if arg_dict['detect_anomaly']:
 if arg_dict['reapper']:
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
+    random.seed(SEED)
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
+    torch.cuda.manual_seed(SEED)
 
 #划分数据集：目前的做法还是直接把所有数据集对象加载到内存中，以后再研究有没有什么更好的方法
 if arg_dict['use_preprocessed']:
-    pass  #TODO: 做这个
+    pass
 else:
     print('数据划分ing...')
     if dataset_name=='CAIL':
@@ -119,7 +125,7 @@ if model_name:
 
             if os.path.isdir(other_arguments[0]):
                 #以文件夹为入参
-                print('预处理fastText数据：')
+                print('预处理fastText数据ing...')
                 train_file_path=os.path.join(other_arguments[0],
                         dataset_name+'_'.join(arg_dict['dataset_name'][1:])+'_'+sub_tasks+'_train'+\
                                                                                 str(datetime.now()).replace('.','_').replace(' ','_')+'.txt')
@@ -133,6 +139,7 @@ if model_name:
                 test_file_path=other_arguments[1]
 
                 if len(other_arguments)>2 and other_arguments[2]=='recal':
+                    print('预处理fastText数据ing...')
                     fasttext_preprocess(sub_tasks,train_file_path,test_file_path,dataset_dict,word_tokenization=word_segmentation)
 
             if not mode=='test':

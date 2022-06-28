@@ -59,8 +59,8 @@ def cail2text_cls(data_dict:dict):
         newd[kvpair[0]]=[{'fact':x['fact'],'charge':x['charge'],'article':x['article'],'term':x['term']} for x in split11(kvpair[1])]
     return newd
 
-def fasttext_preprocess(task:str,train_file_path:str,test_file_path:str,dataset_dict:dict,word_tokenization:str):
-    if word_tokenization=='jieba':
+def fasttext_preprocess(task:str,train_file_path:str,test_file_path:str,dataset_dict:dict,word_tokenization:list):
+    if word_tokenization[0]=='jieba':
         import jieba
         tk=lambda x:' '.join(jieba.cut(x))
     task_key_map={'law-article-prediction':'article','charge-prediction':'charge','term-of-penalty-prediction':'term'}
