@@ -69,6 +69,7 @@ model_name=arg_dict['model']
 other_arguments=arg_dict['other_arguments']
 sub_tasks=arg_dict['sub_tasks']
 mode=arg_dict['mode']
+word_segmentation=arg_dict['word_segmentation']
 
 #划分数据集：目前的做法还是直接把所有数据集对象加载到内存中，以后再研究有没有什么更好的方法
 if arg_dict['use_preprocessed']:
@@ -101,7 +102,7 @@ if model_name:
             from torch_ljp.dataset_utils.preprocess import fasttext_preprocess
 
             if os.path.isdir(other_arguments[0]):
-                #需要做预处理
+                #以文件夹为入参
                 print('预处理fastText数据：')
                 train_file_path=os.path.join(other_arguments[0],
                         dataset_name+'_'.join(arg_dict['dataset_name'][1:])+'_'+sub_tasks+'_train'+\
@@ -109,11 +110,14 @@ if model_name:
                 test_file_path=os.path.join(other_arguments[0],
                         dataset_name+'_'.join(arg_dict['dataset_name'][1:])+'_'+sub_tasks+'_test'+\
                                                                                 str(datetime.now()).replace('.','_').replace(' ','_')+'.txt')
-                fasttext_preprocess(sub_tasks,train_file_path,test_file_path,dataset_dict)
+                fasttext_preprocess(sub_tasks,train_file_path,test_file_path,dataset_dict,word_tokenization=word_segmentation)
             else:
-                #不需要做预处理
+                #以2个文件为入参
                 train_file_path=other_arguments[0]
                 test_file_path=other_arguments[1]
+
+                if len(other_arguments)>2 and other_arguments[2]=='recal':
+                    fasttext_preprocess(sub_tasks,train_file_path,test_file_path,dataset_dict,word_tokenization=word_segmentation)
 
             if not mode=='test':
                 #训练
