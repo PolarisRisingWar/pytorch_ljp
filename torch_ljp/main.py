@@ -4,7 +4,7 @@ parser = argparse.ArgumentParser()
 #参数的使用介绍请参考configs文件夹对应参数全称的文件
 
 #通用参数
-parser.add_argument("-d","--dataset_name",default=['CAIL'],nargs='+')
+parser.add_argument("-d","--dataset_name",default=['CAIL','ILSI'],nargs='+')
 #第一个参数是数据集名称，与README.md中的数据集名称对应
 #后面的参数是使用数据集的不同配置。如不使用-up参数，将根据不同的配置对数据集进行不同的处理。如使用-up参数，将直接忽略其功能
 #但这些参数都将出现在命名中
@@ -74,24 +74,28 @@ mode=arg_dict['mode']
 if arg_dict['use_preprocessed']:
     pass  #TODO: 做这个
 else:
-    print('数据划分阶段：')
+    print('数据划分ing...')
     if dataset_name=='CAIL':
         dataset_dict=cail_split(data_path=config.cail_original_path,data_config=arg_dict['dataset_name'][1:])
+#这一步将数据集划分为训练集-(验证集)-测试集（字典）
 
 if isAnalyse:
-    print('\n数据分析阶段：')
+    print('\n数据分析ing...')
     if dataset_name=='CAIL':
         from torch_ljp.dataset_utils import cail_analyse
         cail_analyse(data_dict=dataset_dict,accu_path=config.cail_accu_path,law_path=config.cail_law_path,
                     data_config=arg_dict['dataset_name'][1:])
 
-#开始跑模型ing
+#数据转换→运行模型→计算指标或输出其他结果
 if model_name:
-    print('模型处理阶段：')
-    #general-domain文本分类模型
-    if model_name in ['fastText']:
-        from torch_ljp.dataset_utils.preprocess import cail2text_cls
-        dataset_dict=cail2text_cls(dataset_dict)
+    print('模型处理ing...')
+    
+    if model_name in ['fastText']:  #general-domain文本分类模型
+        if dataset_name=='CAIL':
+            from torch_ljp.dataset_utils.preprocess import cail2text_cls
+            dataset_dict=cail2text_cls(dataset_dict)
+        #在这一步将数据集字典的每个值转换为以JSON为元素的列表
+        
         if model_name=='fastText':
             import fasttext
             from torch_ljp.dataset_utils.preprocess import fasttext_preprocess
@@ -119,7 +123,7 @@ if model_name:
                 #TODO: 测试
                 print(fasttext_model.test(test_file_path))
                 
-                
+
             
 
                 

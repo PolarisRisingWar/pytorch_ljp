@@ -27,7 +27,7 @@ op_examples文件夹是输出示例，见example.txt中介绍的对应的命令�
 
 英文（印度）：
 - [ ] ILDC（来源：[ILDC for CJPE: Indian Legal Documents Corpus for Court Judgment Prediction and Explanation](https://aclanthology.org/2021.acl-long.313/)）
-- [ ] ILSI（来源：[LeSICiN: A Heterogeneous Graph-Based Approach for Automatic Legal Statute Identification from Indian Legal Documents](https://arxiv.org/abs/2112.14731)，下载地址：[Dataset and additional files/softwares required for the paper "LeSICiN: A Heterogeneous Graph-based Approach for Automatic Legal Statute Identification from Indian Legal Documents" | Zenodo](https://zenodo.org/record/6053791#.YrAtHnZByUl)（除best_model.pt和ils2v.bin外都是数据相关的文件）
+- [x] ILSI（来源：[LeSICiN: A Heterogeneous Graph-Based Approach for Automatic Legal Statute Identification from Indian Legal Documents](https://arxiv.org/abs/2112.14731)，下载地址：[Dataset and additional files/softwares required for the paper "LeSICiN: A Heterogeneous Graph-based Approach for Automatic Legal Statute Identification from Indian Legal Documents" | Zenodo](https://zenodo.org/record/6053791#.YrAtHnZByUl)（除best_model.pt和ils2v.bin外都是数据相关的文件）
 
 法语（比利时）：
 - [ ] BSARD（来源：[A Statutory Article Retrieval Dataset in French](https://arxiv.org/abs/2108.11792)，下载地址：<https://raw.githubusercontent.com/maastrichtlawtech/bsard/master/data/bsard_v1.zip>）
@@ -49,7 +49,7 @@ op_examples文件夹是输出示例，见example.txt中介绍的对应的命令�
 ## 2.2 domain-specific分类模型（非纯预训练模型的）
 - [ ] MLAC（又名FLA）（来源：[Learning to Predict Charges for Criminal Cases with Legal Basis](https://aclanthology.org/D17-1289/)，LADAN、LeSICiN、EPM使用的baseline）
 - [ ] DAPM（来源：[Modeling Dynamic Pairwise Attention for Crime Classification over Legal Articles](https://dl.acm.org/doi/10.1145/3209978.3210057)，LeSICiN使用的baseline）
-- [ ] TOPJUDGE（来源：[Legal Judgment Prediction via Topological Learning](https://aclanthology.org/D18-1390/)，LANDAN、EPM使用的baseline）
+- [ ] TOPJUDGE（来源：[Legal Judgment Prediction via Topological Learning](https://aclanthology.org/D18-1390/)，LANDAN、EPM使用的baseline。代码参考：[thunlp/TopJudge](https://github.com/thunlp/TopJudge)）
 - [ ] Few-Shot（来源：[Few-Shot Charge Prediction with Discriminative Legal Attributes](https://aclanthology.org/C18-1041/)，LADAN使用的baseline）
 - [ ] HMN（来源：[Hierarchical Matching Network for Crime Classification](https://dl.acm.org/doi/10.1145/3331184.3331223)，LeSICiN使用的baseline）
 - [ ] MPBFN（又名MPBFN-WCA）（来源：[Legal Judgment Prediction via Multi-Perspective Bi-Feedback Network](https://www.ijcai.org/proceedings/2019/567)，LADAN、EPM使用的baseline）
@@ -74,6 +74,7 @@ op_examples文件夹是输出示例，见example.txt中介绍的对应的命令�
 - [ ] FLSA（来源：[A few-shot transfer learning approach using text-label embedding with legal attributes for law article prediction](https://link.springer.com/article/10.1007/s10489-021-02516-x)）
 - [ ] PRRP（来源：[Interpretable prison term prediction with reinforce learning and attention](https://link.springer.com/article/10.1007/s10489-022-03675-1)）
 - [ ] DCSCP（来源：[Charge prediction modeling with interpretation enhancement driven by double-layer criminal system](https://link.springer.com/article/10.1007/s11280-021-00873-8)）
+- [ ] CEEN（来源：[Improving legal judgment prediction through reinforced criminal element extraction](https://www.sciencedirect.com/science/article/pii/S0306457321002600)）
 ## 2.3 预训练模型的分类模型
 ### 2.3.1 general-domain
 - [ ] Bert（来源：[BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding](https://arxiv.org/abs/1810.04805)）
