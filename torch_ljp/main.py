@@ -30,6 +30,15 @@ parser.add_argument('-we','--word embedding',default='tfidf')  #词嵌入方法�
 
 parser.add_argument("-m","--model",default=None)  #使用的模型。如置None则为不运行模型（仅做数据分析和预处理等）
 
+parser.add_argument('--reapper',action='store_true')
+#是否需要全局PyTorch保持可复现性
+
+parser.add_argument('-rs','--reappear_seed',default=19390901,type=int)
+#可复现性所使用的随机种子，要求是整数
+
+parser.add_argument('-da','--detect_anomaly',action='store_true')
+#是否开启PyTorch.autograd的异常检测功能
+
 parser.add_argument('--mode',default='pipeline',choices=['pipeline','train','test'])  #流程模式。全流程（训练+验证+测试）、训练、测试/tuili
 
 parser.add_argument('-s','--sub_tasks',default='multi-task3')  #需要实现的子任务（需要对应数据集和模型）
@@ -55,7 +64,7 @@ arg_dict=args.__dict__
 configuration_log=str(arg_dict)  #用str格式保存
 print(arg_dict)
 
-import sys,os
+import sys,os,torch
 from tqdm import tqdm
 from datetime import datetime
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
@@ -70,6 +79,13 @@ other_arguments=arg_dict['other_arguments']
 sub_tasks=arg_dict['sub_tasks']
 mode=arg_dict['mode']
 word_segmentation=arg_dict['word_segmentation']
+
+print('配置异常检测和复现环境...')
+if arg_dict['detect_anomaly']:
+    torch.autograd.set_detect_anomaly(True)
+if arg_dict['reapper']:
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 #划分数据集：目前的做法还是直接把所有数据集对象加载到内存中，以后再研究有没有什么更好的方法
 if arg_dict['use_preprocessed']:
