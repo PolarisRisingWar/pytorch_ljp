@@ -109,7 +109,7 @@ baseline：
 实验结果：
 ![pic1](pics/cail2018result.png)
 ## 3.2 我运行官方代码复现的结果
-仅复现原文中的实验配置。
+见reappear_files文件夹
 ## 3.3 使用本项目代码复现的结果
 实验配置见example.txt中的命令行。
 
